@@ -3,31 +3,31 @@ package programa
 import "database/sql"
 
 type program struct {
-	ID                          int    `json:"id"`
-	GracenoteTmsID              string `json:gracenote_tms_id`
-	GracenoteRootID             string `json:gracenote_root_id`
-	GeneroID                    int    `json:"base_genero_id"`
-	ClassificacaoIndicativaID   int    `json:"base_classificacao_indicativa_id"`
-	Titulo                      string `json:"titulo"`
-	Ano                         int    `json:ano`
-	Atores                      string `json:atores`          //jsonb
-	Diretores                   string `json:diretores`       //jsonb
-	Recomendacoes               string `json:recomendacoes`   //jsonb
-	DescricaoLonga              string `json:descricao_longa`
-	DescricaoCurta              string `json:descricao_curta`
-	DuracaoMinutos              int    `json:duracao_minutos`
-	ClassificacaoQualidade      string `json:classificacao_qualidade`
-	Estrelando                  string `json:estrelando`      //jsonb
-	Destaque                    bool   `json:destaque`
-	EpisodioQuantidade          int    `json:episodeo_quantidade`
-	TemporadaQuantidade         int    `json:temporada_quantidade`
-	ThumbnailTotal              int    `json:thumbnail_total`
-	Imagens                     string `json:imagens`         //jsonb
-	Canal                       bool   `json:canal`
-	Ativo                       bool   `json:ativo`
-	DataDisponivelInicio        string `json:data_disponivel_inicio`
-	DataDisponivelFim           string `json:data_disponivel_fim`
-	DataCriacao                 string `json:data_criacao`
+	ID                        int    `json:"id"`
+	GracenoteTmsID            string `json:gracenote_tms_id`
+	GracenoteRootID           string `json:gracenote_root_id`
+	GeneroID                  int    `json:"base_genero_id"`
+	ClassificacaoIndicativaID int    `json:"base_classificacao_indicativa_id"`
+	Titulo                    string `json:"titulo"`
+	Ano                       int    `json:ano`
+	Atores                    string `json:atores`        //jsonb
+	Diretores                 string `json:diretores`     //jsonb
+	Recomendacoes             string `json:recomendacoes` //jsonb
+	DescricaoLonga            string `json:descricao_longa`
+	DescricaoCurta            string `json:descricao_curta`
+	DuracaoMinutos            int    `json:duracao_minutos`
+	ClassificacaoQualidade    string `json:classificacao_qualidade`
+	Estrelando                string `json:estrelando` //jsonb
+	Destaque                  bool   `json:destaque`
+	EpisodioQuantidade        int    `json:episodeo_quantidade`
+	TemporadaQuantidade       int    `json:temporada_quantidade`
+	ThumbnailTotal            int    `json:thumbnail_total`
+	Imagens                   string `json:imagens` //jsonb
+	Canal                     bool   `json:canal`
+	Ativo                     bool   `json:ativo`
+	DataDisponivelInicio      string `json:data_disponivel_inicio`
+	DataDisponivelFim         string `json:data_disponivel_fim`
+	DataCriacao               string `json:data_criacao`
 }
 
 /*
@@ -129,31 +129,31 @@ func (p *program) DeleteProgram(db *sql.DB) error {
 func (p *program) CreateProgram(db *sql.DB) error {
 	err := db.QueryRow(
 		"INSERT INTO t_programa("+
-		"gracenote_tms_id, "+						
-		"gracenote_root_id, "+						
-		"base_genero_id, "+							
-		"base_classificacao_indicativa_id, "+		
-		"titulo, "+									
-		"ano, "+									
-		"atores, "+
-		"diretores, "+
-		"recomendacoes, "+
-		"descricao_onga, "+
-		"descricao_curta, "+
-		"duracao_minutos, "+
-		"classificacao_qualidade, "+
-		"estrelando, "+
-		"destaque, "+
-		"episodio_quantidade, "+
-		"temporada_quantidade, "+
-		"thumbnail_total, "+
-		"imagens, "+
-		"canal, "+
-		"ativo, "+
-		"data_disponivel_inicio, "+
-		"data_disponivel_fim) VALUES($1, $2, $3, $4, $5, $6, $7, &8, 
-			&9, &10, &11, &12, &13, &14, &15, &16, &17, &18, &19, &20
-			&21, &22, &23) RETURNING id",	
+			"gracenote_tms_id, "+
+			"gracenote_root_id, "+
+			"base_genero_id, "+
+			"base_classificacao_indicativa_id, "+
+			"titulo, "+
+			"ano, "+
+			"atores, "+
+			"diretores, "+
+			"recomendacoes, "+
+			"descricao_longa, "+
+			"descricao_curta, "+
+			"duracao_minutos, "+
+			"classificacao_qualidade, "+
+			"estrelando, "+
+			"destaque, "+
+			"episodio_quantidade, "+
+			"temporada_quantidade, "+
+			"thumbnail_total, "+
+			"imagens, "+
+			"canal, "+
+			"ativo, "+
+			"data_disponivel_inicio, "+
+			"data_disponivel_fim) VALUES($1, $2, $3, $4, $5, $6, $7, &8,"+
+			"&9, &10, &11, &12, &13, &14, &15, &16, &17, &18, &19, &20,"+
+			"&21, &22, &23) RETURNING id",
 		p.GracenoteTmsID,
 		p.GracenoteRootID,
 		p.GeneroID,
