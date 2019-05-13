@@ -2,32 +2,32 @@ package programa
 
 import "database/sql"
 
-type program struct {
-	ID                              int    `json:"id"`
-	GracenoteTmsID                  string `json:gracenote_tms_id`
-	GracenoteRootID                 string `json:gracenote_root_id`
-	BaseGeneroID                    int    `json:"base_genero_id"`
-	BaseClassificacaoIndicativaID   int    `json:"base_classificacao_indicativa_id"`
-	Titulo                          string `json:"titulo"`
-	Ano                             int    `json:ano`
-	Atores                          string `json:atores`          //jsonb
-	Diretores                       string `json:diretores`       //jsonb
-	Recomendacoes                   string `json:recomendacoes`   //jsonb
-	DescricaoLonga                  string `json:descricao_longa`
-	DescricaoCurta                  string `json:descricao_curta`
-	DuracaoMinutos                  int    `json:duracao_minutos`
-	ClassificacaoQualidade          string `json:classificacao_qualidade`
-	Estrelando                      string `json:estrelando`      //jsonb
-	Destaque                        bool   `json:destaque`
-	EpisodioQuantidade              int    `json:episodeo_quantidade`
-	TemporadaQuantidade             int    `json:temporada_quantidade`
-	ThumbnailTotal                  int    `json:thumbnail_total`
-	Imagens                         string `json:imagens`         //jsonb
-	Canal                           bool   `json:canal`
-	Ativo                           bool   `json:ativo`
-	DataDisponivelInicio            string `json:data_disponivel_inicio`
-	DataDisponivelFim               string `json:data_disponivel_fim`
-	DataCriacao                     string `json:data_criacao`
+type Program struct {
+	ID                            int    `json:"id"`
+	GracenoteTmsID                string `json:gracenote_tms_id`
+	GracenoteRootID               string `json:gracenote_root_id`
+	BaseGeneroID                  int    `json:"base_genero_id"`
+	BaseClassificacaoIndicativaID int    `json:"base_classificacao_indicativa_id"`
+	Titulo                        string `json:"titulo"`
+	Ano                           int    `json:ano`
+	Atores                        string `json:atores`        //jsonb
+	Diretores                     string `json:diretores`     //jsonb
+	Recomendacoes                 string `json:recomendacoes` //jsonb
+	DescricaoLonga                string `json:descricao_longa`
+	DescricaoCurta                string `json:descricao_curta`
+	DuracaoMinutos                int    `json:duracao_minutos`
+	ClassificacaoQualidade        string `json:classificacao_qualidade`
+	Estrelando                    string `json:estrelando` //jsonb
+	Destaque                      bool   `json:destaque`
+	EpisodioQuantidade            int    `json:episodeo_quantidade`
+	TemporadaQuantidade           int    `json:temporada_quantidade`
+	ThumbnailTotal                int    `json:thumbnail_total`
+	Imagens                       string `json:imagens` //jsonb
+	Canal                         bool   `json:canal`
+	Ativo                         bool   `json:ativo`
+	DataDisponivelInicio          string `json:data_disponivel_inicio`
+	DataDisponivelFim             string `json:data_disponivel_fim`
+	DataCriacao                   string `json:data_criacao`
 }
 
 /*
@@ -59,7 +59,7 @@ type program struct {
 );
 */
 
-func (p *program) GetProgram(db *sql.DB) error {
+func (p *Program) GetProgram(db *sql.DB) error {
 	return db.QueryRow("SELECT "+
 		"gracenote_tms_id, "+
 		"gracenote_root_id, "+
@@ -70,7 +70,7 @@ func (p *program) GetProgram(db *sql.DB) error {
 		"atores, "+
 		"diretores, "+
 		"recomendacoes, "+
-		"descricao_onga, "+
+		"descricao_longa, "+
 		"descricao_curta, "+
 		"duracao_minutos, "+
 		"classificacao_qualidade, "+
@@ -112,31 +112,31 @@ func (p *program) GetProgram(db *sql.DB) error {
 		&p.DataCriacao)
 }
 
-func (p *program) UpdateProgram(db *sql.DB) error {
+func (p *Program) UpdateProgram(db *sql.DB) error {
 	_, err :=
-		db.Exec("UPDATE t_programa SET" +
-			"gracenote_tms_id=$1, " +
-			"gracenote_root_id=$2, " +
-			"base_genero_id=$3, " +
-			"base_classificacao_indicativa_id=$4, " +
-			"titulo=$5, " +
-			"ano=$6, " +
-			"atores=$7, " +
-			"diretores=$8, " +
-			"recomendacoes=$9, " +
-			"descricao_onga=$10, " +
-			"descricao_curta=$11, " +
-			"duracao_minutos=$12, " +
-			"classificacao_qualidade=$13, " +
-			"estrelando=$14, " +
-			"destaque=$15, " +
-			"episodio_quantidade=$16, " +
-			"temporada_quantidade, " +
-			"thumbnail_total=$17, " +
-			"imagens=$18, " +
-			"canal=$19, " +
-			"ativo=$20, " +
-			"data_disponivel_inicio=$21, " +
+		db.Exec("UPDATE t_programa SET"+
+			"gracenote_tms_id=$1, "+
+			"gracenote_root_id=$2, "+
+			"base_genero_id=$3, "+
+			"base_classificacao_indicativa_id=$4, "+
+			"titulo=$5, "+
+			"ano=$6, "+
+			"atores=$7, "+
+			"diretores=$8, "+
+			"recomendacoes=$9, "+
+			"descricao_longa=$10, "+
+			"descricao_curta=$11, "+
+			"duracao_minutos=$12, "+
+			"classificacao_qualidade=$13, "+
+			"estrelando=$14, "+
+			"destaque=$15, "+
+			"episodio_quantidade=$16, "+
+			"temporada_quantidade, "+
+			"thumbnail_total=$17, "+
+			"imagens=$18, "+
+			"canal=$19, "+
+			"ativo=$20, "+
+			"data_disponivel_inicio=$21, "+
 			"data_disponivel_fim=$22, WHERE id=$23",
 			p.GracenoteTmsID,
 			p.GracenoteRootID,
@@ -166,13 +166,13 @@ func (p *program) UpdateProgram(db *sql.DB) error {
 	return err
 }
 
-func (p *program) DeleteProgram(db *sql.DB) error {
+func (p *Program) DeleteProgram(db *sql.DB) error {
 	_, err := db.Exec("DELETE FROM t_programa WHERE id=$1", p.ID)
 
 	return err
 }
 
-func (p *program) CreateProgram(db *sql.DB) error {
+func (p *Program) CreateProgram(db *sql.DB) error {
 	err := db.QueryRow(
 		"INSERT INTO t_programa("+
 			"gracenote_tms_id, "+
@@ -202,8 +202,8 @@ func (p *program) CreateProgram(db *sql.DB) error {
 			"&21, &22, &23) RETURNING id",
 		p.GracenoteTmsID,
 		p.GracenoteRootID,
-		p.GeneroID,
-		p.ClassificacaoIndicativaID,
+		p.BaseGeneroID,
+		p.BaseClassificacaoIndicativaID,
 		p.Titulo,
 		p.Ano,
 		p.Atores,
@@ -232,7 +232,7 @@ func (p *program) CreateProgram(db *sql.DB) error {
 	return nil
 }
 
-func getPrograms(db *sql.DB, start, count int) ([]program, error) {
+func GetPrograms(db *sql.DB, start, count int) ([]Program, error) {
 	rows, err := db.Query(
 		"SELECT "+
 			"id, "+
@@ -245,7 +245,7 @@ func getPrograms(db *sql.DB, start, count int) ([]program, error) {
 			"atores, "+
 			"diretores, "+
 			"recomendacoes, "+
-			"descricao_onga, "+
+			"descricao_longa, "+
 			"descricao_curta, "+
 			"duracao_minutos, "+
 			"classificacao_qualidade, "+
@@ -268,10 +268,10 @@ func getPrograms(db *sql.DB, start, count int) ([]program, error) {
 
 	defer rows.Close()
 
-	programs := []program{}
+	programs := []Program{}
 
 	for rows.Next() {
-		var p program
+		var p Program
 		if err = rows.Scan(
 			&p.ID,
 			&p.GracenoteTmsID,

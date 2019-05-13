@@ -21,8 +21,8 @@ type App struct {
 
 func (a *App) Initialize(user, password, dbname string) {
 	connectionString :=
-		"user=postgres password=root dbname=BRISAMAX sslmode=disable"
-		//"user=postgres password=root dbname=BRISAMAX sslmode=disable"
+		"user=postgres password=admin dbname=brisamax sslmode=disable"
+		//"user=postgres password=admin dbname=brisamax sslmode=disable"
 
 	var err error
 	a.DB, err = sql.Open("postgres", connectionString)
