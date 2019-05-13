@@ -16,10 +16,10 @@ type program struct {
 	DescricaoLonga              string `json:descricao_longa`
 	DescricaoCurta              string `json:descricao_curta`
 	DuracaoMinutos              int    `json:duracao_minutos`
-	ClassificacaoQUalidade      string `json:classificacao_qualidade`
+	ClassificacaoQualidade      string `json:classificacao_qualidade`
 	Estrelando                  string `json:estrelando`      //jsonb
 	Destaque                    bool   `json:destaque`
-	EpisodeoQuantidade          int    `json:episodeo_quantidade`
+	EpisodioQuantidade          int    `json:episodeo_quantidade`
 	TemporadaQuantidade         int    `json:temporada_quantidade`
 	ThumbnailTotal              int    `json:thumbnail_total`
 	Imagens                     string `json:imagens`         //jsonb
@@ -100,7 +100,7 @@ func (p *program) GetProgram(db *sql.DB) error {
 		&p.DuracaoMinutos,
 		&p.ClassificacaoQualidade,
 		&p.Estrelando,
-		&P.Destaque,
+		&p.Destaque,
 		&p.EpisodioQuantidade,
 		&p.TemporadaQuantidade,
 		&p.ThumbnailTotal,
@@ -129,20 +129,55 @@ func (p *program) DeleteProgram(db *sql.DB) error {
 func (p *program) CreateProgram(db *sql.DB) error {
 	err := db.QueryRow(
 		"INSERT INTO t_programa("+
-			"base_genero_id,"+
-			"base_classificacao_indicativa_id,"+
-			"titulo,"+
-			"url_midia_video,"+
-			"url_midia_trailer,"+
-			"url_capa_retrato,"+
-			"url_capa_paisagem) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
-		p.Genero_id,
-		p.Classificacao_indicativa_id,
+		"gracenote_tms_id, "+						
+		"gracenote_root_id, "+						
+		"base_genero_id, "+							
+		"base_classificacao_indicativa_id, "+		
+		"titulo, "+									
+		"ano, "+									
+		"atores, "+
+		"diretores, "+
+		"recomendacoes, "+
+		"descricao_onga, "+
+		"descricao_curta, "+
+		"duracao_minutos, "+
+		"classificacao_qualidade, "+
+		"estrelando, "+
+		"destaque, "+
+		"episodio_quantidade, "+
+		"temporada_quantidade, "+
+		"thumbnail_total, "+
+		"imagens, "+
+		"canal, "+
+		"ativo, "+
+		"data_disponivel_inicio, "+
+		"data_disponivel_fim) VALUES($1, $2, $3, $4, $5, $6, $7, &8, 
+			&9, &10, &11, &12, &13, &14, &15, &16, &17, &18, &19, &20
+			&21, &22, &23) RETURNING id",	
+		p.GracenoteTmsID,
+		p.GracenoteRootID,
+		p.GeneroID,
+		p.ClassificacaoIndicativaID,
 		p.Titulo,
-		p.Url_midia_video,
-		p.Url_midia_trailer,
-		p.Url_capa_retrato,
-		p.Url_capa_paisagem).Scan(&p.ID)
+		p.Ano,
+		p.Atores,
+		p.Diretores,
+		p.Recomendacoes,
+		p.DescricaoLonga,
+		p.DescricaoCurta,
+		p.DuracaoMinutos,
+		p.ClassificacaoQualidade,
+		p.Estrelando,
+		p.Destaque,
+		p.EpisodioQuantidade,
+		p.TemporadaQuantidade,
+		p.ThumbnailTotal,
+		p.Imagens,
+		p.Canal,
+		p.Ativo,
+		p.DataDisponivelInicio,
+		p.DataDisponivelFim,
+		p.DataCriacao).Scan(&p.ID)
 
 	if err != nil {
 		return err
