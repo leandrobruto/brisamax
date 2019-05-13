@@ -25,26 +25,60 @@ type Program struct {
 );
 */
 
-func (p *Program) GetProgram(db *sql.DB) error {
+func (p *program) GetProgram(db *sql.DB) error {
 	return db.QueryRow("SELECT "+
+		"gracenote_tms_id, "+
+		"gracenote_root_id, "+
 		"base_genero_id, "+
 		"base_classificacao_indicativa_id, "+
 		"titulo, "+
-		"url_midia_video, "+
-		"url_midia_trailer, "+
-		"url_capa_retrato, "+
-		"url_capa_paisagem FROM t_programa WHERE id=$1",
+		"ano, "+
+		"atores, "+
+		"diretores, "+
+		"recomendacoes, "+
+		"descricao_onga, "+
+		"descricao_curta, "+
+		"duracao_minutos, "+
+		"classificacao_qualidade, "+
+		"estrelando, "+
+		"destaque, "+
+		"episodio_quantidade, "+
+		"temporada_quantidade, "+
+		"thumbnail_total, "+
+		"imagens, "+
+		"canal, "+
+		"ativo, "+
+		"data_disponivel_inicio, "+
+		"data_disponivel_fim, "+
+		"data_criacao FROM t_programa WHERE id=$1",
 		p.ID).Scan(
-		&p.Genero_id,
-		&p.Classificacao_indicativa_id,
+		&p.GracenoteTmsID,
+		&p.GracenoteRootID,
+		&p.GeneroID,
+		&p.ClassificacaoIndicativaID,
 		&p.Titulo,
-		&p.Url_midia_video,
-		&p.Url_midia_trailer,
-		&p.Url_capa_retrato,
-		&p.Url_capa_paisagem)
+		&p.Ano,
+		&p.Atores,
+		&p.Diretores,
+		&p.Recomendacoes,
+		&p.DescricaoLonga,
+		&p.DescricaoCurta,
+		&p.DuracaoMinutos,
+		&p.ClassificacaoQualidade,
+		&p.Estrelando,
+		&P.Destaque,
+		&p.EpisodioQuantidade,
+		&p.TemporadaQuantidade,
+		&p.ThumbnailTotal,
+		&p.Imagens,
+		&p.Canal,
+		&p.Ativo,
+		&p.DataDisponivelInicio,
+		&p.DataDisponivelFim,
+		&p.DataCriacao)
 }
 
-func (p *Program) UpdateProgram(db *sql.DB) error {
+func (p *program) UpdateProgram(db *sql.DB) error {
 	_, err :=
 		db.Exec("UPDATE t_programa SET titulo=$1, url_midia_video=$2 WHERE id=$3",
 			p.Titulo, p.Url_midia_video, p.ID)
@@ -52,13 +86,13 @@ func (p *Program) UpdateProgram(db *sql.DB) error {
 	return err
 }
 
-func (p *Program) DeleteProgram(db *sql.DB) error {
+func (p *program) DeleteProgram(db *sql.DB) error {
 	_, err := db.Exec("DELETE FROM t_programa WHERE id=$1", p.ID)
 
 	return err
 }
 
-func (p *Program) CreateProgram(db *sql.DB) error {
+func (p *program) CreateProgram(db *sql.DB) error {
 	err := db.QueryRow(
 		"INSERT INTO t_programa("+
 			"base_genero_id,"+
@@ -83,7 +117,7 @@ func (p *Program) CreateProgram(db *sql.DB) error {
 	return nil
 }
 
-func GetPrograms(db *sql.DB, start, count int) ([]Program, error) {
+func GetPrograms(db *sql.DB, start, count int) ([]program, error) {
 	rows, err := db.Query(
 		"SELECT "+
 			"id, "+
@@ -102,10 +136,10 @@ func GetPrograms(db *sql.DB, start, count int) ([]Program, error) {
 
 	defer rows.Close()
 
-	programs := []Program{}
+	programs := []program{}
 
 	for rows.Next() {
-		var p Program
+		var p program
 		if err = rows.Scan(
 			&p.ID,
 			&p.Genero_id,
