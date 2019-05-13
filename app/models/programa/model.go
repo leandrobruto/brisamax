@@ -2,26 +2,60 @@ package programa
 
 import "database/sql"
 
-type Program struct {
+type program struct {
 	ID                          int    `json:"id"`
-	Genero_id                   int    `json:"base_genero_id"`
-	Classificacao_indicativa_id int    `json:"base_classificacao_indicativa_id"`
+	GracenoteTmsID              string `json:gracenote_tms_id`
+	GracenoteRootID             string `json:gracenote_root_id`
+	GeneroID                    int    `json:"base_genero_id"`
+	ClassificacaoIndicativaID   int    `json:"base_classificacao_indicativa_id"`
 	Titulo                      string `json:"titulo"`
-	Url_midia_video             string `json:"url_midia_video"`
-	Url_midia_trailer           string `json:"url_midia_trailer"`
-	Url_capa_retrato            string `json:"url_capa_retrato"`
-	Url_capa_paisagem           string `json:"url_capa_paisagem"`
+	Ano                         int    `json:ano`
+	Atores                      string `json:atores`          //jsonb
+	Diretores                   string `json:diretores`       //jsonb
+	Recomendacoes               string `json:recomendacoes`   //jsonb
+	DescricaoLonga              string `json:descricao_longa`
+	DescricaoCurta              string `json:descricao_curta`
+	DuracaoMinutos              int    `json:duracao_minutos`
+	ClassificacaoQUalidade      string `json:classificacao_qualidade`
+	Estrelando                  string `json:estrelando`      //jsonb
+	Destaque                    bool   `json:destaque`
+	EpisodeoQuantidade          int    `json:episodeo_quantidade`
+	TemporadaQuantidade         int    `json:temporada_quantidade`
+	ThumbnailTotal              int    `json:thumbnail_total`
+	Imagens                     string `json:imagens`         //jsonb
+	Canal                       bool   `json:canal`
+	Ativo                       bool   `json:ativo`
+	DataDisponivelInicio        string `json:data_disponivel_inicio`
+	DataDisponivelFim           string `json:data_disponivel_fim`
+	DataCriacao                 string `json:data_criacao`
 }
 
 /*
   id bigserial NOT NULL PRIMARY KEY,
+  gracenote_tms_id character varying(100),
+  gracenote_root_id bigint,
   base_genero_id integer NOT NULL,
   base_classificacao_indicativa_id integer NOT NULL,
   titulo character varying(150) NOT NULL,
-  url_midia_video character varying(255) NOT NULL,
-  url_midia_trailer character varying(255) NOT NULL,
-  url_capa_retrato character varying(255) NOT NULL,
-  url_capa_paisagem character varying(255) NOT NULL
+  ano integer,
+  atores jsonb,
+  diretores jsonb,
+  recomendacoes jsonb,
+  descricao_longa text,
+  descricao_curta text,
+  duracao_minutos integer,
+  classificacao_qualidade numeric,
+  estrelando jsonb,
+  destaque boolean NOT NULL DEFAULT false,
+  episodio_quantidade integer,
+  temporada_quantidade integer,
+  thumbnail_total integer,
+  imagens jsonb,
+  canal boolean NOT NULL DEFAULT false,
+  ativo boolean NOT NULL DEFAULT false,
+  data_disponivel_inicio timestamp(0) without time zone NOT NULL DEFAULT NOW(),
+  data_disponivel_fim timestamp(0) without time zone NOT NULL DEFAULT NOW(),
+  data_criacao timestamp(0) without time zone NOT NULL DEFAULT NOW()
 );
 */
 
