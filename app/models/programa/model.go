@@ -4,30 +4,30 @@ import "database/sql"
 
 type Program struct {
 	ID                            int    `json:"id"`
-	GracenoteTmsID                string `json:gracenote_tms_id`
-	GracenoteRootID               string `json:gracenote_root_id`
+	GracenoteTmsID                string `json:"gracenote_tms_id"`
+	GracenoteRootID               string `json:"gracenote_root_id"`
 	BaseGeneroID                  int    `json:"base_genero_id"`
 	BaseClassificacaoIndicativaID int    `json:"base_classificacao_indicativa_id"`
 	Titulo                        string `json:"titulo"`
-	Ano                           int    `json:ano`
-	Atores                        string `json:atores`        //jsonb
-	Diretores                     string `json:diretores`     //jsonb
-	Recomendacoes                 string `json:recomendacoes` //jsonb
-	DescricaoLonga                string `json:descricao_longa`
-	DescricaoCurta                string `json:descricao_curta`
-	DuracaoMinutos                int    `json:duracao_minutos`
-	ClassificacaoQualidade        string `json:classificacao_qualidade`
-	Estrelando                    string `json:estrelando` //jsonb
-	Destaque                      bool   `json:destaque`
-	EpisodioQuantidade            int    `json:episodeo_quantidade`
-	TemporadaQuantidade           int    `json:temporada_quantidade`
-	ThumbnailTotal                int    `json:thumbnail_total`
-	Imagens                       string `json:imagens` //jsonb
-	Canal                         bool   `json:canal`
-	Ativo                         bool   `json:ativo`
-	DataDisponivelInicio          string `json:data_disponivel_inicio`
-	DataDisponivelFim             string `json:data_disponivel_fim`
-	DataCriacao                   string `json:data_criacao`
+	Ano                           int    `json:"ano"`
+	Atores                        string `json:"atores"`        //jsonb
+	Diretores                     string `json:"diretores"`     //jsonb
+	Recomendacoes                 string `json:"recomendacoes"` //jsonb
+	DescricaoLonga                string `json:"descricao_longa"`
+	DescricaoCurta                string `json:"descricao_curta"`
+	DuracaoMinutos                int    `json:"duracao_minutos"`
+	ClassificacaoQualidade        string `json:"classificacao_qualidade"`
+	Estrelando                    string `json:"estrelando"` //jsonb
+	Destaque                      bool   `json:"destaque"`
+	EpisodioQuantidade            int    `json:"episodeo_quantidade"`
+	TemporadaQuantidade           int    `json:"temporada_quantidade"`
+	ThumbnailTotal                int    `json:"thumbnail_total"`
+	Imagens                       string `json:"imagens"` //jsonb
+	Canal                         bool   `json:"canal"`
+	Ativo                         bool   `json:"ativo"`
+	DataDisponivelInicio          string `json:"data_disponivel_inicio"`
+	DataDisponivelFim             string `json:"data_disponivel_fim"`
+	DataCriacao                   string `json:"data_criacao"`
 }
 
 /*
