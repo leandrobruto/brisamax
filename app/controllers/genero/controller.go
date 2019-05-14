@@ -1,14 +1,13 @@
-package programa
+package genero
 
 import (
+	"brisamax/app/models/genero"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
-
-	"brisamax/app/models/programa"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -22,7 +21,6 @@ type App struct {
 func (a *App) Initialize(user, password, dbname string) {
 	connectionString :=
 		"user=postgres password=root dbname=BRISAMAX sslmode=disable"
-		//"user=postgres password=admin dbname=brisamax sslmode=disable"
 
 	var err error
 	a.DB, err = sql.Open("postgres", connectionString)
@@ -31,24 +29,23 @@ func (a *App) Initialize(user, password, dbname string) {
 	}
 
 	a.Router = mux.NewRouter()
-	a.initializeRoutes()
+	a.InitializeRoutes()
 }
 
-// Run starts the app and serves on the specified addr
 func (a *App) Run(addr string) {
 	fmt.Println("Successfully connected!")
 	log.Fatal(http.ListenAndServe(addr, a.Router))
 }
 
-func (a *App) initializeRoutes() {
-	a.Router.HandleFunc("/programs", a.getPrograms).Methods("GET")
-	a.Router.HandleFunc("/program", a.createProgram).Methods("POST")
-	a.Router.HandleFunc("/program/{id:[0-9]+}", a.getProgram).Methods("GET")
-	a.Router.HandleFunc("/program/{id:[0-9]+}", a.updateProgram).Methods("PUT")
-	a.Router.HandleFunc("/program/{id:[0-9]+}", a.deleteProgram).Methods("DELETE")
+func (a *App) InitializeRoutes() {
+	a.Router.HandleFunc("/genres", a.getGenres).Methods("GET")
+	a.Router.HandleFunc("/genre", a.createGenre).Methods("POST")
+	a.Router.HandleFunc("/genre/{id:[0-9]+}", a.getGenre).Methods("GET")
+	a.Router.HandleFunc("/genre/{id:[0-9]+}", a.updateGenre).Methods("PUT")
+	a.Router.HandleFunc("/genre/{id:[0-9]+}", a.deleteGenre).Methods("DELETE")
 }
 
-func (a *App) getPrograms(w http.ResponseWriter, r *http.Request) {
+func (a *App) getGenres(w http.ResponseWriter, r *http.Request) {
 	count, _ := strconv.Atoi(r.FormValue("count"))
 	start, _ := strconv.Atoi(r.FormValue("start"))
 
@@ -59,89 +56,89 @@ func (a *App) getPrograms(w http.ResponseWriter, r *http.Request) {
 		start = 0
 	}
 
-	programs, err := programa.GetPrograms(a.DB, start, count)
+	genres, err := genero.GetGenres(a.DB, start, count)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, programs)
+	respondWithJSON(w, http.StatusOK, genres)
 }
 
-func (a *App) createProgram(w http.ResponseWriter, r *http.Request) {
-	var p programa.Program
+func (a *App) createGenre(w http.ResponseWriter, r *http.Request) {
+	var g genero.Genre
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&p); err != nil {
+	if err := decoder.Decode(&g); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 	defer r.Body.Close()
 
-	if err := p.CreateProgram(a.DB); err != nil {
+	if err := g.CreateGenre(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, p)
+	respondWithJSON(w, http.StatusCreated, g)
 }
 
-func (a *App) getProgram(w http.ResponseWriter, r *http.Request) {
+func (a *App) getGenre(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid program ID")
+		respondWithError(w, http.StatusBadRequest, "Invalid genre ID")
 		return
 	}
 
-	p := programa.Program{ID: id}
-	if err := p.GetProgram(a.DB); err != nil {
+	g := genero.Genre{ID: id}
+	if err := g.GetGenre(a.DB); err != nil {
 		switch err {
 		case sql.ErrNoRows:
-			respondWithError(w, http.StatusNotFound, "Program not found")
+			respondWithError(w, http.StatusNotFound, "Genre not found")
 		default:
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 		}
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, p)
+	respondWithJSON(w, http.StatusOK, g)
 }
 
-func (a *App) updateProgram(w http.ResponseWriter, r *http.Request) {
+func (a *App) updateGenre(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid program ID")
+		respondWithError(w, http.StatusBadRequest, "Invalid genre ID")
 		return
 	}
 
-	var p programa.Program
+	var g genero.Genre
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&p); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+	if err := decoder.Decode(&g); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 	defer r.Body.Close()
-	p.ID = id
+	g.ID = id
 
-	if err := p.UpdateProgram(a.DB); err != nil {
+	if err := g.UpdateGenre(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, p)
+	respondWithJSON(w, http.StatusOK, g)
 }
 
-func (a *App) deleteProgram(w http.ResponseWriter, r *http.Request) {
+func (a *App) deleteGenre(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid program ID")
+		respondWithError(w, http.StatusBadRequest, "Invalid genre ID")
 		return
 	}
 
-	p := programa.Program{ID: id}
-	if err := p.DeleteProgram(a.DB); err != nil {
+	g := genero.Genre{ID: id}
+	if err := g.DeleteGenre(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
