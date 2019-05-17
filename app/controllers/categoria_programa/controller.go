@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"brisamax/app/models/programa"
+	"brisamax/app/models/categoria_programa"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -41,14 +41,15 @@ func (a *App) Run(addr string) {
 }
 
 func (a *App) initializeRoutes() {
-	a.Router.HandleFunc("/programs", a.getPrograms).Methods("GET")
-	a.Router.HandleFunc("/program", a.createProgram).Methods("POST")
-	a.Router.HandleFunc("/program/{id:[0-9]+}", a.getProgram).Methods("GET")
-	a.Router.HandleFunc("/program/{id:[0-9]+}", a.updateProgram).Methods("PUT")
-	a.Router.HandleFunc("/program/{id:[0-9]+}", a.deleteProgram).Methods("DELETE")
+	a.Router.HandleFunc("/programs", a.getCategoryPrograms).Methods("GET")
+	a.Router.HandleFunc("/program", a.createCategoryPrograms).Methods("POST")
+	a.Router.HandleFunc("/program/{id:[0-9]+}", a.getCategoryProgram).Methods("GET")
+	a.Router.HandleFunc("/program/{id:[0-9]+}", a.updateCategoryPrograms).Methods("PUT")
+	a.Router.HandleFunc("/program/{id:[0-9]+}", a.deleteCategoryPrograms).Methods("DELETE")
 }
 
-func (a *App) getPrograms(w http.ResponseWriter, r *http.Request) {
+/////////////////////////////////////////////////////////
+func (a *App) getCategoryPrograms(w http.ResponseWriter, r *http.Request) {
 	count, _ := strconv.Atoi(r.FormValue("count"))
 	start, _ := strconv.Atoi(r.FormValue("start"))
 
@@ -59,33 +60,33 @@ func (a *App) getPrograms(w http.ResponseWriter, r *http.Request) {
 		start = 0
 	}
 
-	programs, err := programa.GetPrograms(a.DB, start, count)
+	categoryPrograms, err := categoria_programa.GetCategoryPrograms(a.DB, start, count)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, programs)
+	respondWithJSON(w, http.StatusOK, categoryPrograms)
 }
 
-func (a *App) createProgram(w http.ResponseWriter, r *http.Request) {
-	var p programa.Program
+func (a *App) createCategoryPrograms(w http.ResponseWriter, r *http.Request) {
+	var cp categoria_programa.CategoryProgram
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&p); err != nil {
+	if err := decoder.Decode(&cp); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 	defer r.Body.Close()
 
-	if err := p.CreateProgram(a.DB); err != nil {
+	if err := cp.CreateCategoryProgram(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, p)
+	respondWithJSON(w, http.StatusCreated, cp)
 }
 
-func (a *App) getProgram(w http.ResponseWriter, r *http.Request) {
+func (a *App) getCategoryProgram(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -93,8 +94,8 @@ func (a *App) getProgram(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p := programa.Program{ID: id}
-	if err := p.GetProgram(a.DB); err != nil {
+	cp := categoria_programa.CategoryProgram{ID: id}
+	if err := cp.GetCategoryProgram(a.DB); err != nil {
 		switch err {
 		case sql.ErrNoRows:
 			respondWithError(w, http.StatusNotFound, "Program not found")
@@ -104,10 +105,10 @@ func (a *App) getProgram(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, p)
+	respondWithJSON(w, http.StatusOK, cp)
 }
 
-func (a *App) updateProgram(w http.ResponseWriter, r *http.Request) {
+func (a *App) updateCategoryPrograms(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -115,24 +116,24 @@ func (a *App) updateProgram(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var p programa.Program
+	var cp categoria_programa.CategoryProgram
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&p); err != nil {
+	if err := decoder.Decode(&cp); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
 		return
 	}
 	defer r.Body.Close()
-	p.ID = id
+	cp.ID = id
 
-	if err := p.UpdateProgram(a.DB); err != nil {
+	if err := cp.UpdateCategoryProgram(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, p)
+	respondWithJSON(w, http.StatusOK, cp)
 }
 
-func (a *App) deleteProgram(w http.ResponseWriter, r *http.Request) {
+func (a *App) deleteCategoryPrograms(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -140,8 +141,8 @@ func (a *App) deleteProgram(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p := programa.Program{ID: id}
-	if err := p.DeleteProgram(a.DB); err != nil {
+	cp := categoria_programa.CategoryProgram{ID: id}
+	if err := cp.DeleteCategoryProgram(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -149,6 +150,7 @@ func (a *App) deleteProgram(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
+///////////////////////
 func respondWithError(w http.ResponseWriter, code int, message string) {
 	respondWithJSON(w, code, map[string]string{"error": message})
 }
