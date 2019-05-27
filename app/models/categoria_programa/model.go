@@ -44,7 +44,7 @@ func (cp *CategoryProgram) CreateCategoryProgram(db *sql.DB) error {
 		"INSERT INTO t_programa_categoria("+
 			"programa_id, "+
 			"base_categoria_id, "+
-			"data_criacao) VALUES($1, $2, $3,) RETURNING id",
+			"data_criacao) VALUES($1, $2, $3) RETURNING id",
 		cp.ProgramaID,
 		cp.BaseCategoriaID,
 		cp.DataCriacao).Scan(&cp.ID)

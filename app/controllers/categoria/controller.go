@@ -1,4 +1,4 @@
-package categoria_programa
+package categoria
 
 import (
 	"database/sql"
@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"brisamax/app/models/categoria_programa"
+	"brisamax/app/models/categoria"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -41,15 +41,14 @@ func (a *App) Run(addr string) {
 }
 
 func (a *App) initializeRoutes() {
-	a.Router.HandleFunc("/programscategories", a.getCategoryPrograms).Methods("GET")
-	a.Router.HandleFunc("/programcategory", a.createCategoryPrograms).Methods("POST")
-	a.Router.HandleFunc("/programcategory/{id:[0-9]+}", a.getCategoryProgram).Methods("GET")
-	a.Router.HandleFunc("/programcategory/{id:[0-9]+}", a.updateCategoryPrograms).Methods("PUT")
-	a.Router.HandleFunc("/programcategory/{id:[0-9]+}", a.deleteCategoryPrograms).Methods("DELETE")
+	a.Router.HandleFunc("/categories", a.getCategories).Methods("GET")
+	a.Router.HandleFunc("/category", a.createCategory).Methods("POST")
+	a.Router.HandleFunc("/category/{id:[0-9]+}", a.getCategory).Methods("GET")
+	a.Router.HandleFunc("/category/{id:[0-9]+}", a.updateCategory).Methods("PUT")
+	a.Router.HandleFunc("/category/{id:[0-9]+}", a.deleteCategory).Methods("DELETE")
 }
 
-/////////////////////////////////////////////////////////
-func (a *App) getCategoryPrograms(w http.ResponseWriter, r *http.Request) {
+func (a *App) getCategories(w http.ResponseWriter, r *http.Request) {
 	count, _ := strconv.Atoi(r.FormValue("count"))
 	start, _ := strconv.Atoi(r.FormValue("start"))
 
@@ -60,33 +59,33 @@ func (a *App) getCategoryPrograms(w http.ResponseWriter, r *http.Request) {
 		start = 0
 	}
 
-	categoryPrograms, err := categoria_programa.GetCategoryPrograms(a.DB, start, count)
+	category, err := categoria.GetBaseCategories(a.DB, start, count)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, categoryPrograms)
+	respondWithJSON(w, http.StatusOK, category)
 }
 
-func (a *App) createCategoryPrograms(w http.ResponseWriter, r *http.Request) {
-	var cp categoria_programa.CategoryProgram
+func (a *App) createCategory(w http.ResponseWriter, r *http.Request) {
+	var bc categoria.Category
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&cp); err != nil {
+	if err := decoder.Decode(&bc); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 	defer r.Body.Close()
 
-	if err := cp.CreateCategoryProgram(a.DB); err != nil {
+	if err := bc.CreateBaseCategory(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, cp)
+	respondWithJSON(w, http.StatusCreated, bc)
 }
 
-func (a *App) getCategoryProgram(w http.ResponseWriter, r *http.Request) {
+func (a *App) getCategory(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -94,8 +93,8 @@ func (a *App) getCategoryProgram(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cp := categoria_programa.CategoryProgram{ID: id}
-	if err := cp.GetCategoryProgram(a.DB); err != nil {
+	bc := categoria.Category{ID: id}
+	if err := bc.GetBaseCategory(a.DB); err != nil {
 		switch err {
 		case sql.ErrNoRows:
 			respondWithError(w, http.StatusNotFound, "Program not found")
@@ -105,10 +104,10 @@ func (a *App) getCategoryProgram(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, cp)
+	respondWithJSON(w, http.StatusOK, bc)
 }
 
-func (a *App) updateCategoryPrograms(w http.ResponseWriter, r *http.Request) {
+func (a *App) updateCategory(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -116,24 +115,24 @@ func (a *App) updateCategoryPrograms(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var cp categoria_programa.CategoryProgram
+	var bc categoria.Category
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&cp); err != nil {
+	if err := decoder.Decode(&bc); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
 		return
 	}
 	defer r.Body.Close()
-	cp.ID = id
+	bc.ID = id
 
-	if err := cp.UpdateCategoryProgram(a.DB); err != nil {
+	if err := bc.UpdateBaseCategory(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, cp)
+	respondWithJSON(w, http.StatusOK, bc)
 }
 
-func (a *App) deleteCategoryPrograms(w http.ResponseWriter, r *http.Request) {
+func (a *App) deleteCategory(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -141,8 +140,8 @@ func (a *App) deleteCategoryPrograms(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cp := categoria_programa.CategoryProgram{ID: id}
-	if err := cp.DeleteCategoryProgram(a.DB); err != nil {
+	bc := categoria.Category{ID: id}
+	if err := bc.DeleteBaseCategory(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
